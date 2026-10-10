@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Проверка доступности сайтов и журнал результатов. Учебный проект Uptime & Ping.">
+  <title>Пульс — проверка доступности сайтов</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d493c'/%3E%3Cpath d='M10 34h12l7-17 9 30 7-13h9' fill='none' stroke='%23c2ef8a' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Пульс — главная"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M3 22h9l5-12 6 21 5-9h9"/></svg>пульс<span>●</span></a>
+    <p class="nav-label">РАБОЧЕЕ ПРОСТРАНСТВО</p>
+    <nav aria-label="Навигация"><a class="nav-item active" href="#overview"><span aria-hidden="true">▦</span> Обзор</a><a class="nav-item" href="#journal"><span aria-hidden="true">≡</span> Журнал проверок</a></nav>
+    <div class="sidebar-bottom"><div class="project-mark">11</div><div><strong>Uptime & Ping</strong><span>Учебный проект · вариант 11</span></div></div>
+  </aside>
+  <main id="overview">
+    <header class="topbar"><span>Рабочее пространство <b>/</b> <strong>Обзор</strong></span><span id="connection" class="connection"><i></i><span id="connection-text">Подключение…</span></span></header>
+    <section class="heading"><div><p class="eyebrow">ДЕРЖИТЕ РУКУ НА ПУЛЬСЕ</p><h1>Доступность сайтов</h1><p class="intro">Проверьте ответ сайта. Сохраните результат. Будьте в курсе.</p></div><span class="local-badge"><i></i> Локальное окружение</span></section>
+    <section class="stats" aria-label="Статистика всех сохранённых проверок">
+      <article class="stat"><span class="stat-label">Всего проверок <span aria-hidden="true">↗</span></span><strong id="stat-total">—</strong><small>сохранено в журнале</small></article>
+      <article class="stat"><span class="stat-label">Доступны <i class="dot up"></i></span><strong id="stat-up">—</strong><small>ответы HTTP 2xx и 3xx</small></article>
+      <article class="stat"><span class="stat-label">Недоступны <i class="dot down"></i></span><strong id="stat-down">—</strong><small>ошибки и тайм-ауты</small></article>
+      <article class="stat"><span class="stat-label">Средний отклик <span aria-hidden="true">◷</span></span><strong><span id="stat-time">—</span><em> мс</em></strong><small>по всем записям, включая демо</small></article>
+    </section>
+    <section class="checker" aria-labelledby="check-title">
+      <div class="checker-title"><span class="section-icon" aria-hidden="true">↗</span><div><h2 id="check-title">Новая проверка</h2><p>Введите адрес — мы проверим доступность и время ответа.</p></div><span class="method">HTTP GET</span></div>
+      <form id="check-form"><label for="url">Адрес сайта</label><div class="input-row"><div class="url-field"><span aria-hidden="true">◎</span><input id="url" name="url" type="url" maxlength="2048" required placeholder="https://example.com" autocomplete="url" aria-describedby="url-hint"></div><button class="button primary" id="check-button" type="submit"><span aria-hidden="true">↗</span> Проверить сайт</button></div><p class="field-hint" id="url-hint">HTTP или HTTPS · ожидание до 8 секунд · результат сохраняется автоматически</p></form>
+      <div class="demo-row"><span>Попробовать без интернета:</span><button type="button" class="demo-button" data-demo="ok"><i class="dot up"></i> Доступен</button><button type="button" class="demo-button" data-demo="error"><i class="dot down"></i> Ошибка 503</button><button type="button" class="demo-button" data-demo="slow"><i class="dot slow"></i> Тайм-аут</button></div>
+      <div id="latest-result" class="latest-result" role="status" aria-live="polite" hidden></div>
+    </section>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+    <section id="journal" class="journal" aria-labelledby="journal-title">
+      <div class="journal-heading"><div><h2 id="journal-title">Журнал проверок <span id="visible-count">—</span></h2><p>Последние 100 записей из базы данных</p></div><button type="button" class="button secondary" id="load-history"><span aria-hidden="true">↻</span> Загрузить журнал</button></div>
+      <div class="journal-toolbar"><div class="filters" role="group" aria-label="Фильтр статуса"><button class="filter active" type="button" data-status="" aria-pressed="true">Все проверки</button><button class="filter" type="button" data-status="up" aria-pressed="false">Доступны</button><button class="filter" type="button" data-status="down" aria-pressed="false">Недоступны</button></div><span class="updated" id="updated">Ещё не загружен</span></div>
+      <div class="table-wrap"><table><caption class="sr-only">История проверок сайтов</caption><thead><tr><th scope="col">САЙТ</th><th scope="col">СТАТУС</th><th scope="col">HTTP</th><th scope="col">ОТКЛИК</th><th scope="col">ВРЕМЯ ПРОВЕРКИ</th></tr></thead><tbody id="history" aria-busy="true"></tbody></table></div>
+      <div class="empty" id="empty" hidden><h3 id="empty-title">В журнале пока тихо</h3><p id="empty-text">Запустите первую проверку сайта.</p></div>
+      <div class="table-foot"><span><i class="dot demo"></i> Демо-записи помечены отдельно</span><span>Данные сохраняются между перезапусками</span></div>
+    </section>
+    <footer><span>Пульс <b>·</b> Uptime & Ping</span><span>Проверка по запросу · HTTP-отклик, не ICMP ping</span></footer>
+  </main>
+</div>
+</body>
+</html>
